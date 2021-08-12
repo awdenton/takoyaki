@@ -1,2 +1,1 @@
-# takoyaki
-Let's Play Takoyaki
+# Let's Play Takoyaki
