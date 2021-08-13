@@ -7,18 +7,27 @@ export default function GameCard(props) {
             <div className="game-card-front">
                 <Card>
                     <CardTitle>
+                        Card Value
                     </CardTitle>
                     <CardBody>
                         <CardText>
-
+                            Card Suit
                         </CardText>
                     </CardBody>
                     <CardSubtitle>
-
+                        Card Value
                     </CardSubtitle>
                 </Card>
             </div>
-            <div className="game-card-back"></div>
+            <div className="game-card-back">
+                <Card>
+                    <CardBody>
+                        <CardText>
+                            Card Back
+                        </CardText>
+                    </CardBody>
+                </Card>
+            </div>
         </div>
     );
 }
