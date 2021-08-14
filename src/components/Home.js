@@ -18,12 +18,18 @@ const buildDeck = () => {
 const dealGame = (deck) => {
     let shuffledDeck = _.shuffle(_.shuffle(deck));
 
-    console.log("deck", deck);
-    console.log("shuffled", shuffledDeck);
+    for(let i = 0; i < 10; i++) {
+        board1.push(shuffledDeck.pop())
+        board2.push(shuffledDeck.pop())
+    }
+
+    return 
 }
 
 export default function Home(props) {
     const deck = buildDeck();
+    const board1 = [];
+    const board2 = [];
 
     dealGame(deck);
 
