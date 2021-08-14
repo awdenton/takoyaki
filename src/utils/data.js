@@ -12,7 +12,8 @@ const data = {
         "10",
         "Jack",
         "Queen",
-        "King"
+        "King",
+        "Joker"
     ],
     cardSuits: [
         "♦",

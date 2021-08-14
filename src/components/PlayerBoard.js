@@ -1,10 +1,36 @@
 import React from "react";
+import _ from "lodash";
+import { Container, Row, Col } from "reactstrap";
+import { GameCard } from "./";
 
 export default function PlayerBoard(props) {
+
     return (
-        <div>
-            <h2>This will be a player board</h2>
-            <p>It will have two rows of five cards</p>
-        </div>
+        <Container>
+            <Row>
+                {_.chain(props.hand)
+                    .slice(0, 5)
+                    .map(card => {
+                        return (
+                            <Col >
+                                <GameCard cardData={card} key={card.id} />
+                            </Col>
+                        );
+                    })
+                    .value()}
+            </Row>
+            <Row>
+                {_.chain(props.hand)
+                    .slice(5)
+                    .map(card => {
+                        return (
+                            <Col>
+                                <GameCard cardData={card} key={card.id} />
+                            </Col>
+                        );
+                    })
+                    .value()}
+            </Row>
+        </Container>
     );
 }

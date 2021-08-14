@@ -1,25 +1,26 @@
 import React from "react";
-import { Card, CardTitle, CardBody, CardText, CardSubtitle} from "reactstrap";
+import { Card, CardTitle, CardBody, CardText, CardSubtitle } from "reactstrap";
 
 export default function GameCard(props) {
+
     return (
-        <div className="game-card">
+        <div className="game-card" id={props.cardData.id}>
             <div className="game-card-front">
                 <Card>
                     <CardTitle>
-                        Card Value
+                        {props.cardData.cVal}
                     </CardTitle>
-                    <CardBody>
+                    <CardBody className="text-center">
                         <CardText>
-                            Card Suit
+                        {props.cardData.cSuit}
                         </CardText>
                     </CardBody>
-                    <CardSubtitle>
-                        Card Value
+                    <CardSubtitle className="text-right">
+                        {props.cardData.cVal}
                     </CardSubtitle>
                 </Card>
             </div>
-            <div className="game-card-back">
+            {/* <div className="game-card-back">
                 <Card>
                     <CardBody>
                         <CardText>
@@ -27,7 +28,7 @@ export default function GameCard(props) {
                         </CardText>
                     </CardBody>
                 </Card>
-            </div>
+            </div> */}
         </div>
     );
 }
