@@ -1,34 +1,31 @@
-import React from "react";
-import { Card, CardTitle, CardBody, CardText, CardSubtitle } from "reactstrap";
+import React, { useState, useContext} from "react";
+import { data } from "../utils";
+import { GameContext } from "../utils";
 
 export default function GameCard(props) {
+    const gameContext = useContext(GameContext);
+    const [isFlipped, setIsFlipped] = useState(false);
+
+    const getBackgroundOffset = id => {
+        const cardHeight = (data.cardWidth * 3.5) / 2.5;
+
+        const hOff = (id % 13 !== 0 ? (id % 13) * -1 : -13);
+        const vOff = Math.floor(id / 13) * -1;
+
+        return {
+            backgroundPosition: `${hOff * data.cardWidth}px ${vOff * cardHeight}px`,
+        }
+    }
+
+    const handleClick = () => {
+        props.cardData.flipped = !props.cardData.flipped;
+        setIsFlipped(!isFlipped);
+    }
 
     return (
-        <div className="game-card" id={props.cardData.id}>
-            <div className="game-card-front">
-                <Card>
-                    <CardTitle>
-                        {props.cardData.cVal}
-                    </CardTitle>
-                    <CardBody className="text-center">
-                        <CardText>
-                        {props.cardData.cSuit}
-                        </CardText>
-                    </CardBody>
-                    <CardSubtitle className="text-right">
-                        {props.cardData.cVal}
-                    </CardSubtitle>
-                </Card>
-            </div>
-            {/* <div className="game-card-back">
-                <Card>
-                    <CardBody>
-                        <CardText>
-                            Card Back
-                        </CardText>
-                    </CardBody>
-                </Card>
-            </div> */}
+        <div className={`game-card ${props.cardData.flipped ? "flipped" : ""}`} id={props.cardData.id} onClick={props.cardData.canFlip ? handleClick : () => {}}>
+            <div className="game-card-front" style={getBackgroundOffset(props.cardData.id)}></div>
+            <div className="game-card-back"></div>
         </div>
     );
 }

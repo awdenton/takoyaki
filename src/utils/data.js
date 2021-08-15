@@ -1,6 +1,5 @@
 const data = {
     cardVals: [
-        "Ace",
         "2",
         "3",
         "4",
@@ -13,14 +12,15 @@ const data = {
         "Jack",
         "Queen",
         "King",
-        "Joker"
+        "Ace"
     ],
     cardSuits: [
-        "♦",
-        "♣",
         "♥",
+        "♣",
+        "♦",
         "♠"
-    ]
+    ],
+    cardWidth: 107
 }
 
 export default data;

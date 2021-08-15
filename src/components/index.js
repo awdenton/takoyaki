@@ -1,5 +1,4 @@
 export { default as Home } from "./Home";
 export { default as GameCard } from "./GameCard";
-export { default as GameBoard } from "./GameBoard"
 export { default as PlayerBoard } from "./PlayerBoard";
-export  {default as CardPiles } from "./CardPiles";
+export { default as CardPiles } from "./CardPiles";

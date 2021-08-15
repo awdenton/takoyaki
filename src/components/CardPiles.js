@@ -1,28 +1,30 @@
-import React from "react";
-import { Row, Col } from "reactstrap";
+import React, { useContext } from "react";
+import _ from "lodash";
 import { GameCard } from "./";
+import { GameContext } from "../utils";
 
 export default function CardPiles(props) {
+    const gameContext = useContext(GameContext);
+
     const blankCard = {
         id: "99",
         cVal: " ",
         cSuit: " "
     }
 
-    console.log(props);
-    console.log(props.drawPile[0]);
+    const handleClick = () => {
+        console.log(gameContext.drawPile[0].cVal);
+    }
 
     return (
-        <Row>
+        <div>
             <h1 className="text-center">Draw</h1>
-            <Col xs="12">
-                hey
-                {}
-                {/* <GameCard cardData={props.drawPile[0]} /> */}
-            </Col>
-            <Col xs="12">
-                ho
-            </Col>
-        </Row>
+            <div onClick={handleClick}>
+                {gameContext.drawPile[0] ? <GameCard cardData={gameContext.drawPile[0]} /> : null}
+            </div>
+            <div>
+                {gameContext.discardPile[0] ? <GameCard cardData={gameContext.discardPile[0]} /> : null}
+            </div>
+        </div>
     );
 }

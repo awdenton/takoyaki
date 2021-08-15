@@ -1,36 +1,33 @@
-import React from "react";
+import React, { useEffect, useContext } from "react";
 import _ from "lodash";
-import { Container, Row, Col } from "reactstrap";
 import { GameCard } from "./";
+import { GameContext } from "../utils";
 
 export default function PlayerBoard(props) {
+    const gameContext = useContext(GameContext);
 
     return (
-        <Container>
-            <Row>
-                {_.chain(props.hand)
-                    .slice(0, 5)
-                    .map(card => {
-                        return (
-                            <Col >
-                                <GameCard cardData={card} key={card.id} />
-                            </Col>
-                        );
-                    })
-                    .value()}
-            </Row>
-            <Row>
-                {_.chain(props.hand)
-                    .slice(5)
-                    .map(card => {
-                        return (
-                            <Col>
-                                <GameCard cardData={card} key={card.id} />
-                            </Col>
-                        );
-                    })
-                    .value()}
-            </Row>
-        </Container>
+        <div>
+            <div>
+                {_.chain(gameContext[`board${props.hand}`])
+                .slice(0,5)
+                .map(card => {
+                    return (
+                        <GameCard cardData={card} key={card.id} />
+                    );
+                })
+                .value()}
+            </div>
+            <div>
+            {_.chain(gameContext[`board${props.hand}`])
+                .slice(5)
+                .map(card => {
+                    return (
+                        <GameCard cardData={card} key={card.id} />
+                    );
+                })
+                .value()}
+            </div>
+        </div>
     );
 }

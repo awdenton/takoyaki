@@ -1,16 +1,15 @@
-import React, { useState } from "react";
-import { Container } from "reactstrap";
+import React, { useState, useContext } from "react";
 import _ from "lodash";
 import { data } from "../utils";
-import { GameBoard } from "./";
+import { PlayerBoard, CardPiles } from "./";
+import { GameContext } from "../utils";
 
 const buildDeck = () => {
     let cards = [];
 
-    //building the deck this way allows doing id# % 14 to get card value, 0=joker, 1=ace, etc.
     _.forEach(data.cardSuits, suit => {
         _.forEach(data.cardVals, val => {
-            cards.push({ id: cards.length + 1, cVal: val, cSuit: suit });
+            cards.push({ id: cards.length + 1, cVal: val, cSuit: suit, flipped: false, canFlip: false, location: "D" });
         });
     });
 
@@ -18,23 +17,39 @@ const buildDeck = () => {
 }
 
 export default function Home(props) {
-    // DECK holds all possible card values. Gets shuffled and dealt on "dealGame()"
-    const DECK = buildDeck();
-
     const [drawPile, setDrawPile] = useState([]);
     const [discardPile, setDiscardPile] = useState([]);
     const [board1, setBoard1] = useState([]);
     const [board2, setBoard2] = useState([]);
+    const [playerTurn, setPlayerTurn] = useState("1");
+
+    const gameValues = {
+        drawPile: drawPile,
+        discardPile: discardPile,
+        board1: board1,
+        board2: board2,
+        playerTurn: playerTurn,
+
+        changeDrawPile: setDrawPile,
+        changeDiscardPile: setDiscardPile,
+        changeBoard1: setBoard1,
+        changeBoard2: setBoard2,
+        changePlayerTurn: setPlayerTurn
+    };
 
     const dealGame = () => {
-        let remainingDeck = _.shuffle(_.shuffle(DECK.slice()));
+        let remainingDeck = _.shuffle(_.shuffle(buildDeck()));
         let newBoard1 = [];
         let newBoard2 = [];
 
         for (let i = 0; i < 10; i++) {
-            newBoard1.push(remainingDeck.pop());
+            remainingDeck[0].location = `1`;
+            newBoard1.push(remainingDeck.shift());
+            remainingDeck[0].location = `2`;
             newBoard2.push(remainingDeck.pop());
         }
+
+        remainingDeck[0].canFlip = true;
 
         setDrawPile(remainingDeck);
         setDiscardPile([]);
@@ -42,11 +57,36 @@ export default function Home(props) {
         setBoard2(newBoard2);
     }
 
-    return (
-        <Container>
-            <button onClick={dealGame}>Deal</button>
+    const flipCards = () => {
+        let temp1 = board1.slice();
+        console.log(temp1);
+        _.forEach(temp1, card =>{
+            card.flipped = !card.flipped;
+        })
+        setBoard1(temp1);
+    }
 
-            <GameBoard drawPile={drawPile} discardPile={discardPile} board1={board1} board2={board2} />
-        </Container>
+    return (
+        <GameContext.Provider value={gameValues}>
+            <div>
+
+                <button onClick={dealGame}>Deal</button>
+                <button onClick={flipCards}>Flip Cards</button>
+
+
+                <div style={{ border: '1px solid black' }}>
+                    <h1 className="text-center">Player 1</h1>
+                    <PlayerBoard hand={1} />
+                </div>
+                <div>
+                    <CardPiles />
+                </div>
+                <div style={{ border: '1px solid white' }}>
+                    <h1 className="text-center">Player 2</h1>
+                    <PlayerBoard hand={2} />
+                </div>
+
+            </div>
+        </GameContext.Provider>
     );
 }
