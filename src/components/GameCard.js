@@ -1,4 +1,4 @@
-import React, { useState, useContext} from "react";
+import React, { useState, useContext } from "react";
 import { data } from "../utils";
 import { GameContext } from "../utils";
 
@@ -20,10 +20,11 @@ export default function GameCard(props) {
     const handleClick = () => {
         props.cardData.flipped = !props.cardData.flipped;
         setIsFlipped(!isFlipped);
+        props.drawCard();
     }
 
     return (
-        <div className={`game-card ${props.cardData.flipped ? "flipped" : ""}`} id={props.cardData.id} onClick={props.cardData.canFlip ? handleClick : () => {}}>
+        <div className={`game-card ${isFlipped ? "flipped" : ""}`} onClick={props.cardData.canFlip ? handleClick : () => {}} id={props.cardData.id}>
             <div className="game-card-front" style={getBackgroundOffset(props.cardData.id)}></div>
             <div className="game-card-back"></div>
         </div>

@@ -5,13 +5,13 @@ const GameContext = React.createContext({
     discardPile: [],
     board1: [],
     board2: [],
-    playerTurn: "",
+    isPlayer1Turn: "",
     
     changeDrawPile: () => {},
     changeDiscardPile: () => {},
     changeBoard1: () => {},
     changeBoard2: () => {},    
-    changePlayerTurn: () => {}
+    changeIsPlayer1Turn: () => {}
 });
 
 export default GameContext;
