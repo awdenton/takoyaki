@@ -9,7 +9,7 @@ export default function PlayerBoard(props) {
     return (
         <div>
             <div>
-                {_.chain(gameContext[`board${props.hand}`])
+                {_.chain(props.board)
                 .slice(0,5)
                 .map(card => {
                     return (
@@ -19,7 +19,7 @@ export default function PlayerBoard(props) {
                 .value()}
             </div>
             <div>
-            {_.chain(gameContext[`board${props.hand}`])
+            {_.chain(props.board)
                 .slice(5)
                 .map(card => {
                     return (

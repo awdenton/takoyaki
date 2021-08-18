@@ -1,10 +1,14 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { data } from "../utils";
-import { GameContext } from "../utils";
 
 export default function GameCard(props) {
-    const gameContext = useContext(GameContext);
-    const [isFlipped, setIsFlipped] = useState(false);
+    const [isFlipped, setIsFlipped] = useState(props.cardData.flipped);
+    const [isMatched, setIsMatched] = useState(props.cardData.matched);
+
+    useEffect(() => {
+        setIsFlipped(props.cardData.flipped);
+        setIsMatched(props.cardData.matched)
+    }, [props.cardData.flipped, props.cardData.matched])
 
     const getBackgroundOffset = id => {
         const cardHeight = (data.cardWidth * 3.5) / 2.5;
@@ -26,7 +30,7 @@ export default function GameCard(props) {
     return (
         <div className={`game-card ${isFlipped ? "flipped" : ""}`} onClick={props.cardData.canFlip ? handleClick : () => {}} id={props.cardData.id}>
             <div className="game-card-front" style={getBackgroundOffset(props.cardData.id)}></div>
-            <div className="game-card-back"></div>
+            <div className={`game-card-back ${isMatched ? "matched" : ""}`}></div>
         </div>
     );
 }

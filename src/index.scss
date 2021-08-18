@@ -12,6 +12,7 @@ body {
   display: inline-block;
   width: $cardWidth;
   height: $cardHeight;
+  transition-property: transform, ;
   transition: transform 0.5s;
   transform-style: preserve-3d;
 }
@@ -25,6 +26,10 @@ body {
 
 .game-card-back {
   background-position: 0 ($cardHeight * -1);
+}
+
+.game-card-back.matched {
+  background-position: 0 0;
 }
 
 .game-card-front, .game-card-back {

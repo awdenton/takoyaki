@@ -1,15 +1,14 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState } from "react";
 import _ from "lodash";
 import { data } from "../utils";
-import { GameCard } from ".";
-import { GameContext } from "../utils";
+import { PlayerBoard, GameCard } from ".";
 
 const buildDeck = () => {
     let cards = [];
 
     _.forEach(data.cardSuits, suit => {
         _.forEach(data.cardVals, val => {
-            cards.push({ id: cards.length + 1, cVal: val, cSuit: suit, flipped: false, canFlip: false });
+            cards.push({ id: cards.length + 1, cVal: val, cSuit: suit, matched: false, flipped: false, canFlip: false });
         });
     });
 
@@ -23,25 +22,11 @@ export default function Home(props) {
     const [board2, setBoard2] = useState([]);
     const [isPlayer1Turn, setIsPlayer1Turn] = useState(true);
 
-    // useEffect(() => {
-    //     console.log("You flipped a card");
-    // }, [drawPile])
-
-    const gameValues = {
-        drawPile: drawPile,
-        discardPile: discardPile,
-        board1: board1,
-        board2: board2,
-        isPlayer1Turn: isPlayer1Turn,
-
-        changeDrawPile: setDrawPile,
-        changeDiscardPile: setDiscardPile,
-        changeBoard1: setBoard1,
-        changeBoard2: setBoard2,
-        changeIsPlayer1Turn: setIsPlayer1Turn
-    };
-
     const dealGame = () => {
+        setDrawPile([]);
+        setBoard1([]);
+        setBoard2([]);
+
         let remainingDeck = _.shuffle(_.shuffle(buildDeck()));
         let newBoard1 = [];
         let newBoard2 = [];
@@ -63,41 +48,45 @@ export default function Home(props) {
 
     const discard = () => {
         let drawCopy = drawPile.slice();
-        let discardCopy = discardCopy.slice();
-        let burnCard = drawCopy.pop();
-        discardCopy.push(burnCard);
-        drawCopy[0].canFlip = true;
+        let discardCopy = discardPile.slice();
 
-        setDrawPile(drawCopy);
+        let burnCard = drawCopy.shift();
+        burnCard.canFlip = false;
+
+        discardCopy.unshift(burnCard);
         setDiscardPile(discardCopy);
+
+        drawCopy[0].canFlip = true;
+        setDrawPile(drawCopy);
+
+        setIsPlayer1Turn(!isPlayer1Turn)
     }
 
-    // will this need to be recursive?
+    const match = () => {
+
+    }
+
     const drawCard = () => {
         let drawValue = drawPile[0].cVal;
-        setTimeout(discard, 1500);
         // check if card value is greater than 10
         if (drawValue > 10) {
-            // discard it if it is and change turn
-            // these two actions can be wrapped into one function.
-            // will need to call again if card slot has already been flipped
-
+            setTimeout(discard, 1500);
         } else {
-            // If cardVale is 10 or less, got some checks to do.
+            // If cardVal is 10 or less, got some checks to do.
             // First copy the active board
             let currBoard = isPlayer1Turn ? board1.slice() : board2.slice();
             // check if the slot is already been flipped over
             // if it is, discard it
-            if(currBoard[drawValue-1].flipped === true) {
-                // my super discard function
+            if (currBoard[drawValue - 1].flipped === true) {
+                setTimeout(discard, 1500);
             } else {
-                // if card is 10 or less, and the index of the active board HAS NOT
-                // been flipped, then switch the draw card and the card from the player board,
-                // play game again with the card switched off the player's board
+                //highlight the card 
+                currBoard[drawValue - 1].matched = true;
+                currBoard[drawValue - 1].canFlip = true;
+                isPlayer1Turn ? setBoard1(currBoard) : setBoard2(currBoard);
+                setTimeout(discard, 1500);
             }
         }
-
-
     }
 
     const flipCards = () => {
@@ -119,68 +108,66 @@ export default function Home(props) {
     }
 
     return (
-        <GameContext.Provider value={gameValues}>
-            <div>
-                <h1>{`Player ${isPlayer1Turn ? 1 : 2}'s turn`}</h1>
+        <div>
+            <h1>{`Player ${isPlayer1Turn ? 1 : 2}'s turn`}</h1>
 
-                <button onClick={dealGame}>Deal</button>
-                <button onClick={flipCards}>Flip Cards</button>
+            <button onClick={dealGame}>Deal</button>
+            <button onClick={flipCards}>Flip Cards</button>
 
-                <div style={{ border: '1px solid black' }}>
-                    <h1 className="text-center">Player 1</h1>
-                    <div>
-                        {_.chain(board1)
-                            .slice(0, 5)
-                            .map((card, index) => {
-                                return (
-                                    <GameCard cardData={card} key={card.id} />
-                                );
-                            })
-                            .value()}
-                    </div>
-                    <div>
-                        {_.chain(board1)
-                            .slice(5)
-                            .map(card => {
-                                return (
-                                    <GameCard cardData={card} key={card.id} />
-                                );
-                            })
-                            .value()}
-                    </div>
+            <div style={{ border: '1px solid black' }}>
+                <h1 className="text-center">Player 1</h1>
+                <div>
+                    {_.chain(board1)
+                        .slice(0, 5)
+                        .map(card => {
+                            return (
+                                <GameCard cardData={card} key={card.id} />
+                            );
+                        })
+                        .value()}
                 </div>
                 <div>
-                    <h1 className="text-center">Draw</h1>
-                    <div>
-                        {drawPile[0] ? <GameCard cardData={drawPile[0]} drawCard={drawCard} /> : null}
-                        {discardPile[0] ? <GameCard cardData={discardPile[0]} /> : null}
-                    </div>
+                    {_.chain(board1)
+                        .slice(5)
+                        .map(card => {
+                            return (
+                                <GameCard cardData={card} key={card.id} />
+                            );
+                        })
+                        .value()}
                 </div>
-                <div style={{ border: '1px solid white' }}>
-                    <h1 className="text-center">Player 2</h1>
-                    <div>
-                        {_.chain(board2)
-                            .slice(0, 5)
-                            .map(card => {
-                                return (
-                                    <GameCard cardData={card} key={card.id} />
-                                );
-                            })
-                            .value()}
-                    </div>
-                    <div>
-                        {_.chain(board2)
-                            .slice(5)
-                            .map(card => {
-                                return (
-                                    <GameCard cardData={card} key={card.id} />
-                                );
-                            })
-                            .value()}
-                    </div>
-                </div>
-
             </div>
-        </GameContext.Provider>
+            <div>
+                <h1 className="text-center">Draw</h1>
+                <div>
+                    {drawPile[0] ? <GameCard cardData={drawPile[0]} drawCard={drawCard} /> : null}
+                    {discardPile[0] ? <GameCard cardData={discardPile[0]} /> : null}
+                </div>
+            </div>
+            <div style={{ border: '1px solid white' }}>
+                <h1 className="text-center">Player 2</h1>
+                <div>
+                    {_.chain(board2)
+                        .slice(0, 5)
+                        .map(card => {
+                            return (
+                                <GameCard cardData={card} key={card.id} />
+                            );
+                        })
+                        .value()}
+                </div>
+                <div>
+                    {_.chain(board2)
+                        .slice(5)
+                        .map(card => {
+                            return (
+                                <GameCard cardData={card} key={card.id} />
+                            );
+                        })
+                        .value()}
+                </div>
+            </div>
+
+        </div>
     );
 }
