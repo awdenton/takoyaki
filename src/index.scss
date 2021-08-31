@@ -9,18 +9,13 @@ body {
 }
 
 .game-card {
-  display: inline-block;
   width: $cardWidth;
   height: $cardHeight;
   transition-property: transform, ;
-  transition: transform 0.5s;
   transform-style: preserve-3d;
 }
 
 .game-card-front {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   transform: rotateY(180deg);  
 }
 
@@ -36,12 +31,8 @@ body {
   position: absolute;
   width: 100%;
   height: 100%;
-  background-image: url('./utils/8BitDeckAssets.png');
+  background-image: url('./assets/8BitDeckAssets.png');
   background-size: $bgWidth $bgHeight;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
-}
-
-.flipped {
-  transform: rotateY(180deg);
 }

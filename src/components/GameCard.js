@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { data } from "../utils";
+import React, { useState } from 'react';
+import { useSpring, animated } from 'react-spring';
+import { data } from '../utils';
 
 export default function GameCard(props) {
-    const [isFlipped, setIsFlipped] = useState(props.cardData.flipped);
-    const [isMatched, setIsMatched] = useState(props.cardData.matched);
 
-    useEffect(() => {
-        setIsFlipped(props.cardData.flipped);
-        setIsMatched(props.cardData.matched)
-    }, [props.cardData.flipped, props.cardData.matched])
+    const flipAnimation = useSpring({
+        transform: `rotateY(${props.cardInfo.flipped ? 180 : 0}deg)`,
+        config: { mass: 1, tension: 250, friction: 35 }
+    });
 
     const getBackgroundOffset = id => {
         const cardHeight = (data.cardWidth * 3.5) / 2.5;
@@ -21,16 +20,10 @@ export default function GameCard(props) {
         }
     }
 
-    const handleClick = () => {
-        props.cardData.flipped = !props.cardData.flipped;
-        setIsFlipped(!isFlipped);
-        props.drawCard();
-    }
-
     return (
-        <div className={`game-card ${isFlipped ? "flipped" : ""}`} onClick={props.cardData.canFlip ? handleClick : () => {}} id={props.cardData.id}>
-            <div className="game-card-front" style={getBackgroundOffset(props.cardData.id)}></div>
-            <div className={`game-card-back ${isMatched ? "matched" : ""}`}></div>
-        </div>
+        <animated.div className={`game-card`} style={flipAnimation} id={props.cardInfo.id}>
+            <div className="game-card-front" style={getBackgroundOffset(props.cardInfo.id)}></div>
+            <div className={`game-card-back`}></div>
+        </animated.div>
     );
 }
