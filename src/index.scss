@@ -3,28 +3,69 @@ $cardHeight: ($cardWidth * 3.5) / 2.5;
 $bgWidth: ($cardWidth * 534) / 35;
 $bgHeight: ($cardHeight * 188) / 47;
 
+
 body {
-  background-color: #35654d !important;
+  background-color: #35654d;
   text-align: center;
 }
+
+.main {
+  width: 85%;
+  margin: auto;
+  justify-content: center;
+}
+
+.board {
+  margin: 20px;
+  width: 100%;
+}
+
+.player .game-card {
+  display: inline-block;
+}
+
+.util {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.pile {
+  display: inline-block;
+  width: $cardWidth;
+  height: $cardHeight;
+}
+
+.pile .game-card {
+  position: absolute;
+}
+
+// .draw .game-card {
+//   position: absolute;
+// }
+
+// .discard .game-card {
+//   position: absolute;
+// }
+
+// .game-card-frame {
+//   display: inline-block;
+//   border: 2px solid blue;
+//   //transform: rotateZ(90deg);
+// }
 
 .game-card {
   width: $cardWidth;
   height: $cardHeight;
-  transition-property: transform, ;
   transform-style: preserve-3d;
 }
-
+  
 .game-card-front {
-  transform: rotateY(180deg);  
+  transform: rotateY(180deg);
+  background-position: 0 0;
 }
 
 .game-card-back {
   background-position: 0 ($cardHeight * -1);
-}
-
-.game-card-back.matched {
-  background-position: 0 0;
 }
 
 .game-card-front, .game-card-back {
