@@ -1,24 +1,30 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { useSpring, useTransition, animated } from 'react-spring';
+import React, { useEffect, useState } from 'react';
+import { useTransition, animated } from 'react-spring';
 import useMeasure from 'react-use-measure';
-import _ from 'lodash';
+import _, { set } from 'lodash';
 import { GameCard } from '../components';
 import { Constants } from '../utils';
 
+const defaultLayout = {
+    cardsPerRow: 10
+}
+
 export default function GameBoard(props) {
     const [deck, setDeck] = useState([]);
-    const [deckLayout, setDeckLayout] = useState([]);
-
+    const [leftOffset, setLeftOffset] = useState(0);
+    const [columns, setColumns] = useState(10);
+    
     const [boardSizeRef, boardSize] = useMeasure();
 
     useEffect(() => {
-        console.log(deck);
-    }, [deck])
+        setColumns(Math.floor(boardSize.width / Constants.CARD_DATA.cardWidth) - 1);
+        setLeftOffset((boardSize.width - (columns * Constants.CARD_DATA.cardWidth)) / 2);
+        updateDeckLayout(deck);
+    }, [boardSize, columns])
 
     const deckTransition = useTransition(deck, {
-        // keys: deck.map((item, index) => index),
-        from: ({ left, top }) => ({ left, top, opacity: 0 }),
-        enter: ({ left, top }) => ({ left, top, opacity: 1 }),
+        from: { left: 0, top: 0, opacity: 0 },
+        enter: item => [{ left: item.left, top: item.top, opacity: 1 }],
         update: ({ left, top }) => ({ left, top }),
         leave: { opacity: 0 },
         config: { mass: 5, tension: 500, friction: 100 },
@@ -41,8 +47,8 @@ export default function GameBoard(props) {
         _.forEach(deckCopy, (card, index) => {
             card["index"] = index
 
-            card["left"] = (index % 10) * Constants.CARD_DATA.cardWidth;
-            card["top"] = Math.ceil(Math.floor(index / 10) * ((Constants.CARD_DATA.cardWidth * 3.5) / 2.5))
+            card["left"] = (index % columns) * Constants.CARD_DATA.cardWidth + leftOffset;
+            card["top"] = Math.ceil(Math.floor(index / columns) * ((Constants.CARD_DATA.cardWidth * 3.5) / 2.5))
         })
 
         setDeck(deckCopy);
@@ -58,7 +64,7 @@ export default function GameBoard(props) {
     }
 
     const shuffle = () => {
-        updateDeckLayout(_.shuffle(_.slice(deck)));
+        updateDeckLayout(_.shuffle(deck));
     }
 
     return (
@@ -78,7 +84,7 @@ export default function GameBoard(props) {
                 } */}
 
                 {deckTransition((style, item) => {
-                    return <animated.div style={style}><GameCard cardInfo={item} /></animated.div>
+                    return <animated.div style={style} className="card-frame"><GameCard cardInfo={item} /></animated.div>
                 })}
 
             </div>

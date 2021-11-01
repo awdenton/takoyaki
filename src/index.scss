@@ -17,11 +17,16 @@ body {
 
 .game {
   position: relative;
+  border: 2px solid red;
+}
+
+.card-frame {
+  position: absolute;
 }
 
 .game-card {
   // display: inline-block;
-  position: absolute;
+  // position: absolute;
   width: $cardWidth;
   height: $cardHeight;
   transform-style: preserve-3d;
