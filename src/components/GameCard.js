@@ -1,8 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSpring, animated } from 'react-spring';
-import { data } from '../utils';
+import useMeasure from 'react-use-measure';
+import { Constants } from '../utils';
 
 export default function GameCard(props) {
+    const [posRef, cardPosition] = useMeasure();
+
+    // useEffect(() => {
+    //     props.getPosition(props.cardInfo.index, cardPosition)
+    // }, [cardPosition]);
 
     const flipAnimation = useSpring({
         transform: `rotateY(${props.cardInfo.flipped ? 180 : 0}deg)`,
@@ -10,18 +16,18 @@ export default function GameCard(props) {
     });
 
     const getBackgroundOffset = id => {
-        const cardHeight = (data.cardWidth * 3.5) / 2.5;
+        const cardHeight = (Constants.CARD_DATA.cardWidth * 3.5) / 2.5;
 
         const hOff = (id % 13 !== 0 ? (id % 13) * -1 : -13);
         const vOff = Math.floor(id / 13) * -1;
 
-        return `${hOff * data.cardWidth}px ${vOff * cardHeight}px`;
+        return `${hOff * Constants.CARD_DATA.cardWidth}px ${vOff * cardHeight}px`;
     }
 
     return (
-        <div className="game-card" >
-            <animated.div className="game-card-front" style={{ visibility: props.cardInfo.frontVisible, backgroundPosition: getBackgroundOffset(props.cardInfo.id), rotateY: "180deg", ...flipAnimation }} />
-            <animated.div className="game-card-back" style={{visibility: props.cardInfo.backVisible, ...flipAnimation}} />
+        <div ref={posRef} className="game-card" style={{left: props.cardInfo.left, top: props.cardInfo.top}}>
+            <animated.div className="game-card-front" style={{ backgroundPosition: getBackgroundOffset(props.cardInfo.id), rotateY: "180deg", ...flipAnimation }} />
+            <animated.div className="game-card-back" style={{ ...flipAnimation }} />
         </div>
     );
 }

@@ -15,45 +15,13 @@ body {
   justify-content: center;
 }
 
-.board {
-  margin: 20px;
-  width: 100%;
+.game {
+  position: relative;
 }
-
-.player .game-card {
-  display: inline-block;
-}
-
-.util {
-  display: flex;
-  justify-content: space-evenly;
-}
-
-.pile {
-  display: inline-block;
-  width: $cardWidth;
-  height: $cardHeight;
-}
-
-.pile .game-card {
-  position: absolute;
-}
-
-// .draw .game-card {
-//   position: absolute;
-// }
-
-// .discard .game-card {
-//   position: absolute;
-// }
-
-// .game-card-frame {
-//   display: inline-block;
-//   border: 2px solid blue;
-//   //transform: rotateZ(90deg);
-// }
 
 .game-card {
+  // display: inline-block;
+  position: absolute;
   width: $cardWidth;
   height: $cardHeight;
   transform-style: preserve-3d;
