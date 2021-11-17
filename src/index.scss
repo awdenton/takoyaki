@@ -7,17 +7,16 @@ $bgHeight: ($cardHeight * 188) / 47;
 body {
   background-color: #35654d;
   text-align: center;
+  margin: 0;
 }
 
 .main {
-  width: 85%;
   margin: auto;
   justify-content: center;
 }
 
 .game {
   position: relative;
-  border: 2px solid red;
 }
 
 .card-frame {
