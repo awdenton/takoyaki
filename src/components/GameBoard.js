@@ -30,10 +30,10 @@ export default function GameBoard(props) {
     const cardHeight = (Constants.CARD_DATA.cardWidth * 3.5) / 2.5;
 
     useEffect(() => {
-        let columnsUpdate = boardSize.width > (10 * Constants.CARD_DATA.cardWidth) ? 10 : 5;
-        let playerOffsetUpdate = (boardSize.width - (columnsUpdate * Constants.CARD_DATA.cardWidth)) / 2;
-        let utilOffsetUpdate = (boardSize.width - (3 * Constants.CARD_DATA.cardWidth)) / 4;
-        let midBoardUpdate = columnsUpdate === 10 ? cardHeight : cardHeight * 2
+        const columnsUpdate = boardSize.width > (10 * Constants.CARD_DATA.cardWidth) ? 10 : 5;
+        const playerOffsetUpdate = (boardSize.width - (columnsUpdate * Constants.CARD_DATA.cardWidth)) / 2;
+        const utilOffsetUpdate = (boardSize.width - (3 * Constants.CARD_DATA.cardWidth)) / 4;
+        const midBoardUpdate = columnsUpdate === 10 ? cardHeight : cardHeight * 2
 
         setBoardLayout({ ...boardLayout, columns: columnsUpdate, playerOffset: playerOffsetUpdate, utilOffset: utilOffsetUpdate, midBoard: midBoardUpdate });
     }, [boardSize]);
@@ -42,17 +42,9 @@ export default function GameBoard(props) {
         updateDeckLayout(_.slice(deck));
 
         if (boardLayout.active) {
-            setTimeout(() => {
-                setBoardLayout({ ...boardLayout, discard: boardLayout.active + 1, active: null });
-            }, 2000);
-        } else {
-
+            checkMatch();
         }
     }, [boardLayout]);
-
-    useEffect(() => {
-
-    }, [deck]);
 
     const deckTransition = useTransition(deck, {
         from: { left: 0, top: boardLayout.midBoard, opacity: 0, zIndex: 1 },
@@ -152,18 +144,49 @@ export default function GameBoard(props) {
             deckCopy[index].flipped = !deckCopy[index].flipped;
             deckCopy[index].canFlip = false;
 
-            setBoardLayout({ ...boardLayout, active: boardLayout.draw, draw: boardLayout.draw + 1 })
-            setDeck(deckCopy);
+            if (index === boardLayout.draw) {
+                setDeck(deckCopy);
+                setBoardLayout({ ...boardLayout, active: boardLayout.draw, draw: boardLayout.draw + 1 })
+            } else {
+                const tempCard = deckCopy[index];
+                deckCopy[index] = deckCopy[boardLayout.active];
+                deckCopy[boardLayout.active] = tempCard;
+                updateDeckLayout(deckCopy)
+                setBoardLayout(Object.assign({}, boardLayout));
+            }
         }
     }
 
+    const discard = () => {
+        setTimeout(() => {
+            const deckCopy = _.slice(deck);
+            deckCopy[boardLayout.draw].canFlip = true;
+            setDeck(deckCopy);
+            setBoardLayout({ ...boardLayout, discard: boardLayout.active + 1, active: null });
+            setGameState({ ...gameState, isPlayer1Turn: !gameState.isPlayer1Turn });
+        }, 2000);
+    }
+
     const checkMatch = () => {
-        // check value of active card
-        // if it matches an unflipped card of one of the players,
-        // highlight in some way. make it clickable.
-        // if no match is found, discard and switch player turn
-        // end game will be dealt with later
-        const cardVal = deck[boardLayout.active]
+        const cardVal = deck[boardLayout.active].cVal - 1;
+        if (cardVal > 9) {
+            console.log("too high");
+            discard();
+            return;
+        }
+
+        const startIndex = gameState.isPlayer1Turn ? 0 : 10;
+        if (deck[startIndex + cardVal].flipped) {
+            console.log("already flipped");
+            discard();
+            return;
+        } else {
+            console.log("lets get flipping");
+            const deckCopy = _.slice(deck);
+            deckCopy[startIndex + cardVal].canFlip = true;
+            setDeck(deckCopy);
+            return;
+        }
     }
 
     const nextTurn = () => {
