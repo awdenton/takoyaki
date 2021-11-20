@@ -17,7 +17,8 @@ const boardLayoutInit = {
 
 const gameStateInit = {
     isPlayer1Turn: _.sample([true, false]),
-    isActiveGame: false
+    isActiveGame: false,
+    isGameOVer: false
 }
 
 export default function GameBoard(props) {
@@ -39,12 +40,17 @@ export default function GameBoard(props) {
     }, [boardSize]);
 
     useEffect(() => {
-        updateDeckLayout(_.slice(deck));
+        if (deck.length) {
+            updateDeckLayout(_.slice(deck));
 
-        if (boardLayout.active) {
-            checkMatch();
+            if (boardLayout.active) {
+                checkMatch();
+            }
         }
     }, [boardLayout]);
+
+    useEffect(() => {
+    },[deck])
 
     const deckTransition = useTransition(deck, {
         from: { left: 0, top: boardLayout.midBoard, opacity: 0, zIndex: 1 },
@@ -52,12 +58,12 @@ export default function GameBoard(props) {
         update: item => [{ left: item.left, top: item.top, zIndex: item.z }],
         leave: { left: boardSize.right - Constants.CARD_DATA.cardWidth - 50, top: boardLayout.midBoard, opacity: 0 },
         config: { mass: 5, tension: 400, friction: 65 },
-        trail: 5,
+        trail: 5
     });
 
     const newDeck = () => {
         if (deck.length) {
-            setGameState({ ...gameState, isActiveGame: false, isPlayer1Turn: _.sample([true, false]) });
+            setGameState(gameStateInit);
             setDeck([]);
         } else {
             let freshDeck = [];
@@ -67,13 +73,14 @@ export default function GameBoard(props) {
                     freshDeck.push({ id: freshDeck.length + 1, cVal: val, cSuit: suit, flipped: false, canFlip: false, left: 0, top: boardLayout.midBoard, z: 1 });
                 });
             });
-
+            
+            freshDeck = _.shuffle(freshDeck);
+            freshDeck[20].canFlip = true;
+            setDeck(freshDeck);
             setGameState({ ...gameState, isActiveGame: true });
             setBoardLayout({ ...boardLayout, draw: 20, discard: 20, active: null });
 
-            freshDeck = _.shuffle(freshDeck);
-            freshDeck[20].canFlip = true;
-            updateDeckLayout(freshDeck);
+            // updateDeckLayout(freshDeck);
         }
     }
 
@@ -129,15 +136,6 @@ export default function GameBoard(props) {
         setDeck(deckCopy);
     }
 
-    const flipAllCards = () => {
-        setDeck(
-            _.map(deck, card => {
-                card.flipped = !card.flipped;
-                return card;
-            })
-        );
-    }
-
     const draw = (index) => {
         if (deck[index].canFlip) {
             const deckCopy = _.slice(deck);
@@ -168,20 +166,32 @@ export default function GameBoard(props) {
     }
 
     const checkMatch = () => {
-        const cardVal = deck[boardLayout.active].cVal - 1;
-        if (cardVal > 9) {
-            console.log("too high");
-            discard();
+        const startIndex = gameState.isPlayer1Turn ? 0 : 10;
+
+        // check for end conditions first
+        // win condition
+        if (!_.chain(deck).slice(startIndex, startIndex + 10).filter({ flipped: false }).value().length) {
+            console.log("winner winner chicken dinner");
+            return;
+        }
+        // tie condition
+        if (boardLayout.active === 51) {
+            setGameState({ ...gameState, isActiveGame: false });
             return;
         }
 
-        const startIndex = gameState.isPlayer1Turn ? 0 : 10;
+        const cardVal = deck[boardLayout.active].cVal - 1;
+        // if a face card, discard
+        if (cardVal > 9) {
+            discard();
+            return;
+        }
+        // if players card is already flipped, discard it
+        // otherwise highlight matched card (still to do) and make it clickable
         if (deck[startIndex + cardVal].flipped) {
-            console.log("already flipped");
             discard();
             return;
         } else {
-            console.log("lets get flipping");
             const deckCopy = _.slice(deck);
             deckCopy[startIndex + cardVal].canFlip = true;
             setDeck(deckCopy);
@@ -189,17 +199,11 @@ export default function GameBoard(props) {
         }
     }
 
-    const nextTurn = () => {
-        setBoardLayout({ ...boardLayout, draw: boardLayout.draw + 1, discard: boardLayout.discard + 1 });
-    }
-
     return (
         <div className="main">
-            <h1>TAKOYAKI</h1>
+            <h1>たこ焼き</h1>
 
             <button onClick={newDeck}>{deck.length ? "End Game" : "New Game"}</button>
-            <button onClick={flipAllCards}>Flip</button>
-            <button onClick={nextTurn}>Next Turn</button>
 
             <h1>{gameState.isActiveGame ? gameState.isPlayer1Turn ? "NORTH" : "SOUTH" : "PREPARE YOURSELF"}</h1>
 
@@ -210,7 +214,6 @@ export default function GameBoard(props) {
                 })}
 
             </div>
-
         </div>
     );
 }
