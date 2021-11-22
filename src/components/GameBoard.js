@@ -54,8 +54,8 @@ export default function GameBoard(props) {
 
     const deckTransition = useTransition(deck, {
         from: { left: 0, top: boardLayout.midBoard, opacity: 0, zIndex: 1 },
-        enter: item => [{ left: item.left, top: item.top, opacity: 1, zIndex: item.z }],
-        update: item => [{ left: item.left, top: item.top, zIndex: item.z }],
+        enter: card => [{ left: card.left, top: card.top, opacity: 1, zIndex: card.z }],
+        update: card => [{ left: card.left, top: card.top, zIndex: card.z }],
         leave: { left: boardSize.right - Constants.CARD_DATA.cardWidth - 50, top: boardLayout.midBoard, opacity: 0 },
         config: { mass: 5, tension: 400, friction: 65 },
         trail: 5
@@ -76,11 +76,10 @@ export default function GameBoard(props) {
             
             freshDeck = _.shuffle(freshDeck);
             freshDeck[20].canFlip = true;
+            freshDeck[20].z = 32;
             setDeck(freshDeck);
             setGameState({ ...gameState, isActiveGame: true });
             setBoardLayout({ ...boardLayout, draw: 20, discard: 20, active: null });
-
-            // updateDeckLayout(freshDeck);
         }
     }
 
@@ -208,11 +207,9 @@ export default function GameBoard(props) {
             <h1>{gameState.isActiveGame ? gameState.isPlayer1Turn ? "NORTH" : "SOUTH" : "PREPARE YOURSELF"}</h1>
 
             <div ref={boardSizeRef} className="game">
-
                 {deckTransition((style, item, t, i) => {
                     return <animated.div style={style} onClick={() => draw(i)} className="card-frame"><GameCard cardInfo={item} /></animated.div>
                 })}
-
             </div>
         </div>
     );
