@@ -1,0 +1,59 @@
+[gd_scene load_steps=2 format=3 uid="uid://bovxtiwk5ic0"]
+
+[sub_resource type="CSharpScript" id="CSharpScript_7qkf3"]
+script/source = "using Godot;
+
+public partial class HUD : CanvasLayer
+{
+    [Signal]
+    public delegate void NewGameEventHandler();
+
+    [Signal]
+    public delegate void ShuffleEventHandler();
+
+    public override void _Ready()
+    {
+        GetNode<Button>(\"NewGameButton\").Pressed += OnNewGameButtonPressed;
+        GetNode<Button>(\"ShuffleButton\").Pressed += OnShuffleButtonPressed;
+    }
+
+    private void OnNewGameButtonPressed()
+    {
+        EmitSignal(SignalName.NewGame);
+    }
+
+    private void OnShuffleButtonPressed()
+    {
+        EmitSignal(SignalName.Shuffle);
+    }
+}
+"
+
+[node name="HUD" type="CanvasLayer"]
+script = SubResource("CSharpScript_7qkf3")
+
+[node name="NewGameButton" type="Button" parent="."]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -46.5
+offset_top = -80.0
+offset_right = 53.5
+offset_bottom = -40.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_horizontal = 4
+text = "New Game"
+
+[node name="ShuffleButton" type="Button" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -50.0
+offset_top = 40.0
+offset_right = 50.0
+offset_bottom = 80.0
+grow_horizontal = 2
+text = "Shuffle"
