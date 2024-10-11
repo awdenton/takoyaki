@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://bk41qj2x2plyl"]
+
+[node name="Label" type="Label"]
+offset_left = 436.0
+offset_top = 153.0
+offset_right = 643.0
+offset_bottom = 176.0
+text = "Howdy Doody Planet Earth"
