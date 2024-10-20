@@ -3,6 +3,9 @@
 # Godot 4+ specific ignores
 .godot/
 
+# Visual Studio
+.vs/
+
 # dependencies
 /node_modules
 /.pnp
