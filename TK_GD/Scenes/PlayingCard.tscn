@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://c71yderctam20"]
 
-[ext_resource type="Texture2D" uid="uid://ohr05cax1wba" path="res://Assets/8BitDeckAssets.png" id="1_6mryf"]
-[ext_resource type="Script" path="res://PlayingCard.cs" id="1_hkseg"]
+[ext_resource type="Script" path="res://Scripts/PlayingCard.cs" id="1_7eg6l"]
+[ext_resource type="Texture2D" uid="uid://ohr05cax1wba" path="res://Assets/8BitDeckAssets.png" id="2_0wki7"]
 
 [sub_resource type="Animation" id="Animation_fmobs"]
 resource_name = "flip"
@@ -43,7 +43,7 @@ size = Vector2(35, 47)
 
 [node name="PlayingCard" type="Area2D"]
 scale = Vector2(2, 2)
-script = ExtResource("1_hkseg")
+script = ExtResource("1_7eg6l")
 
 [node name="FlipAnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -51,13 +51,13 @@ libraries = {
 }
 
 [node name="CardFront" type="Sprite2D" parent="."]
-texture = ExtResource("1_6mryf")
+texture = ExtResource("2_0wki7")
 region_enabled = true
 region_rect = Rect2(0, 0, 35, 47)
 metadata/_edit_group_ = true
 
 [node name="CardBack" type="Sprite2D" parent="."]
-texture = ExtResource("1_6mryf")
+texture = ExtResource("2_0wki7")
 region_enabled = true
 region_rect = Rect2(0, 47, 35, 47)
 metadata/_edit_group_ = true

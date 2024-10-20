@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://bnypapowg7knh"]
+
+[node name="PlayerBoard" type="Node2D"]
+
+[node name="Bay1" type="Marker2D" parent="."]
+position = Vector2(-150, 0)
+
+[node name="Bay2" type="Marker2D" parent="."]
+position = Vector2(-75, 0)
+
+[node name="Bay3" type="Marker2D" parent="."]
+
+[node name="Bay4" type="Marker2D" parent="."]
+position = Vector2(75, 0)
+
+[node name="Bay5" type="Marker2D" parent="."]
+position = Vector2(150, 0)
+
+[node name="Bay6" type="Marker2D" parent="."]
+position = Vector2(-150, 100)
+
+[node name="Bay7" type="Marker2D" parent="."]
+position = Vector2(-75, 100)
+
+[node name="Bay8" type="Marker2D" parent="."]
+position = Vector2(0, 100)
+
+[node name="Bay9" type="Marker2D" parent="."]
+position = Vector2(75, 100)
+
+[node name="Bay10" type="Marker2D" parent="."]
+position = Vector2(150, 100)
