@@ -6,20 +6,31 @@ using Takoyaki;
 
 public partial class GameBoard : Node2D
 {
-	private PackedScene _playingCardScene;
+	private static List<PlayingCard> _deck = new(52);
+	
+	private Marker2D _cardSpawn;
+	private Marker2D _cardDespawn;
 	private Marker2D _drawPile;
-
-	private static List<PlayingCard> _deck = new();
-
-	public GameBoard()
-	{
-		_playingCardScene = ResourceLoader.Load<PackedScene>("res://PlayingCard.tscn");
-	}
+	private Marker2D _discardPile;
 
 	// Called when the node enters the scene tree for the first time.
-	public override void _Ready()
+	public override void _EnterTree()
 	{
+		_cardSpawn = GetNode<Marker2D>("CardSpawn");
+		_cardDespawn = GetNode<Marker2D>("CardDespawn");
 		_drawPile = GetNode<Marker2D>("DrawPile");
+		_discardPile = GetNode<Marker2D>("DiscardPile");
+		
+		foreach (CardSuits suit in Enum.GetValues(typeof(CardSuits)))
+		{
+			foreach (var value in Constants.CardRanks)
+			{
+				var newCard = new PlayingCard(_deck.Count + 1, suit, value);
+				newCard.Position = _drawPile.Position;
+
+				_deck.Add(newCard);
+			}
+		}
 	}
 
 	private void NewGame()
